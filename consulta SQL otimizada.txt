@@ -1,0 +1,18 @@
+SELECT
+    CAST(soh.OrderDate AS DATE) AS OrderDate,
+    sp.Name AS State,
+    p.Name AS Product,
+    SUM(sod.LineTotal) AS SalesValue
+FROM Sales.SalesOrderHeader soh
+JOIN Sales.SalesOrderDetail sod
+    ON soh.SalesOrderID = sod.SalesOrderID
+JOIN Production.Product p
+    ON sod.ProductID = p.ProductID
+JOIN Person.Address a
+    ON soh.ShipToAddressID = a.AddressID
+JOIN Person.StateProvince sp
+    ON a.StateProvinceID = sp.StateProvinceID
+GROUP BY
+    CAST(soh.OrderDate AS DATE),
+    sp.Name,
+    p.Name
