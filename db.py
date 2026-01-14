@@ -2,7 +2,7 @@ import pyodbc
 import pandas as pd
 
 def get_conn():
-    # MARS_Connection=yes resolve: "Conexão ocupada com os resultados de outro comando"
+    # Habilita MARS para permitir múltiplas consultas simultâneas
     return pyodbc.connect(
         "DRIVER={ODBC Driver 17 for SQL Server};"
         "SERVER=localhost;"
@@ -50,8 +50,8 @@ def get_metadata(conn):
         """,
         conn,
     )
-    products = prod_df["Product"].tolist()
 
+    products = prod_df["Product"].tolist()
     return min_date, max_date, state_df, products
 
 def load_sales_by_state(conn, start_date, end_date, products_sel):
@@ -78,7 +78,9 @@ def load_sales_by_state(conn, start_date, end_date, products_sel):
 
 def load_sales_filtered(conn, start_date, end_date, states_sel, products_sel):
     if not products_sel:
-        return pd.DataFrame(columns=["OrderDate", "StateCode", "State", "Product", "SalesValue"])
+        return pd.DataFrame(
+            columns=["OrderDate", "StateCode", "State", "Product", "SalesValue"]
+        )
 
     state_filter_sql = ""
     params = [start_date, end_date, *products_sel]
