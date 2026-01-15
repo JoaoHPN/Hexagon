@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 
 from data_layer import get_metadata_cached, get_sales_df
@@ -8,8 +7,35 @@ from components.tables_view import render_tables
 from components.charts_view import render_charts
 from components.sellers_stores_view import render_sellers_and_stores
 
-st.set_page_config(page_title="Painel de Vendas", layout="wide")
-st.title("Painel de Vendas")
+# =========================
+# Config
+# =========================
+st.set_page_config(page_title="Hexagon", layout="wide")
+
+GREEN = "#b4e060"
+
+# =========================
+# Header: Logo + Nome
+# =========================
+header_col1, header_col2 = st.columns([0.05, 0.92], vertical_alignment="center")
+
+with header_col1:
+    st.image("logo.png", width=55)
+
+with header_col2:
+    st.markdown(
+        """
+        <div style="display:flex; align-items:center; height:100%;">
+            <h1 style="margin:0; padding:0;">Hexagon</h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.markdown(
+    "<hr style='margin-top:0.5rem; margin-bottom:1.5rem;'>",
+    unsafe_allow_html=True,
+)
 
 # =========================
 # Estado do app (session_state)
@@ -20,7 +46,7 @@ if "filters" not in st.session_state:
         "start_date": min_date,
         "end_date": max_date,
         "products": list(products_all),
-        "states": [],  # vazio = "Todos" no mapa (conforme requisito)
+        "states": [],  # vazio = "Todos" no mapa
     }
 
 f = st.session_state.filters
@@ -49,9 +75,12 @@ df = get_sales_df(
 )
 
 # =========================
-# KPIs + Tabelas
+# RESULTADOS (VERDE)
 # =========================
-st.subheader("Resultados")
+st.markdown(
+    f"<h2 style='color:{GREEN}; margin-bottom:0.5rem;'>Resultados</h2>",
+    unsafe_allow_html=True,
+)
 
 total_sales = float(df["SalesValue"].sum()) if not df.empty else 0.0
 k1, k2, k3 = st.columns(3)
@@ -64,14 +93,11 @@ render_tables(df)
 st.divider()
 
 # =========================
-# Visualizações
+# VISUALIZAÇÕES (AGORA O TÍTULO + BOTÃO FICAM DENTRO DO COMPONENTE)
 # =========================
-st.subheader("Visualizações")
-
-# 2 gráficos originais (Produto + Série temporal Ano/Mês)
 render_charts(df)
 
 st.divider()
 
-# NOVO: Top 10 Vendedores e Lojas
 render_sellers_and_stores(f, top_n=10)
+

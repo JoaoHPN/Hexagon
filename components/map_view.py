@@ -7,6 +7,7 @@ from data_layer import get_map_df
 BG = "#0e1117"
 MAP_SELECTED = "#b4e060"
 MAP_UNSELECTED = "#1a1f2b"
+MAP_BORDER = "#4c78a8"  # azul alinhado com os gráficos
 
 def render_map(filters: dict):
     st.markdown("**Mapa (EUA)**")
@@ -25,7 +26,9 @@ def render_map(filters: dict):
     else:
         selected_set = set([str(x).strip().upper() for x in filters["states"]])
 
-    base_map["SelectedNum"] = base_map["StateCode"].apply(lambda x: 1 if x in selected_set else 0)
+    base_map["SelectedNum"] = base_map["StateCode"].apply(
+        lambda x: 1 if x in selected_set else 0
+    )
 
     colorscale = [
         [0.0, MAP_UNSELECTED],
@@ -43,7 +46,13 @@ def render_map(filters: dict):
             zmax=1,
             colorscale=colorscale,
             showscale=False,
-            marker=dict(line=dict(color="#6c768a", width=0.8), opacity=1.0),
+            marker=dict(
+                line=dict(
+                    color=MAP_BORDER,  # <- borda azul
+                    width=1.1
+                ),
+                opacity=1.0,
+            ),
         )
     )
 
@@ -58,8 +67,15 @@ def render_map(filters: dict):
     st.plotly_chart(
         fig_map,
         use_container_width=True,
-        config={"displayModeBar": False, "scrollZoom": False, "doubleClick": False},
+        config={
+            "displayModeBar": False,
+            "scrollZoom": False,
+            "doubleClick": False,
+        },
         key=f"map_{hash(tuple(filters['products']))}_{hash(tuple(filters['states']))}_{filters['start_date']}_{filters['end_date']}",
     )
 
-    st.caption("Selecionados: " + (", ".join(filters["states"]) if filters["states"] else "Todos"))
+    st.caption(
+        "Selecionados: "
+        + (", ".join(filters["states"]) if filters["states"] else "Todos")
+    )

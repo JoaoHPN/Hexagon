@@ -4,12 +4,18 @@ import pandas as pd
 
 from data_layer import get_metadata_cached, get_state_df_all, get_products_all
 
+TITLE_GREEN = "#b4e060"
+
 def render_filters(filters: dict):
     min_date, max_date, _, _ = get_metadata_cached()
     state_df_all = get_state_df_all()
     products_all = get_products_all()
 
-    st.subheader("Filtros")
+    # Título em azul
+    st.markdown(
+        f"<h2 style='color:{TITLE_GREEN}; margin-bottom:0.5rem;'>Filtros</h2>",
+        unsafe_allow_html=True,
+    )
 
     col_state, col_prod, col_actions = st.columns([1.0, 1.0, 0.6], gap="large")
 
@@ -24,7 +30,6 @@ def render_filters(filters: dict):
             st.rerun()
 
         if b2.button("Selecionar nenhum", key="states_select_none", use_container_width=True):
-            # Pelo requisito atual: vazio = "Todos" no mapa
             st.session_state.filters["states"] = []
             st.session_state.pop("regions_editor", None)
             st.rerun()
