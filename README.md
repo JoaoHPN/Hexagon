@@ -29,7 +29,7 @@ Git e GitHub
 
 Como executar o projeto
 Clone o repositório:
-git clone https://github.com/SEU_USUARIO/Exagon.git
+git clone https://github.com/JoaoHPN/Hexagon.git
 
 Execute o app:
 python -m streamlit run app.py
